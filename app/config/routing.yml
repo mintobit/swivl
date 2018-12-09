@@ -1,0 +1,4 @@
+swivl_classroom:
+    resource: "@SwivlClassroomBundle/Controller/"
+    type:     annotation
+    prefix:   /

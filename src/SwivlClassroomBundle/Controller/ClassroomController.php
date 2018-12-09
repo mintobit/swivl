@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace SwivlClassroomBundle\Controller;
 
@@ -7,6 +8,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use SwivlClassroomBundle\Entity\Classroom;
 use SwivlClassroomBundle\Form\ClassroomType;
+use SwivlClassroomBundle\Service\ClassroomManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,8 +19,9 @@ class ClassroomController extends FOSRestController
      */
     public function classroomAction()
     {
-        $classroomRepository = $this->get('repository.classroom');
-        $classrooms = $classroomRepository->findAll();
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
+        $classrooms = $classroomManager->getAll();
         if (empty($classrooms)) {
             return new View('No classrooms exist', Response::HTTP_NOT_FOUND);
         }
@@ -31,11 +34,11 @@ class ClassroomController extends FOSRestController
      */
     public function getClassroomAction($id)
     {
-        $classroomRepository = $this->get('repository.classroom');
-        $classroom = $classroomRepository->find($id);
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
+        $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            //return new View('Classroom not found', Response::HTTP_NOT_FOUND);
-            throw $this->createNotFoundException('Classroom not found');
+            return new View('Classroom not found', Response::HTTP_NOT_FOUND);
         }
 
         return $classroom;
@@ -46,14 +49,14 @@ class ClassroomController extends FOSRestController
      */
     public function createClassroomAction(Request $request)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
         $classroom = new Classroom();
         $form = $this->createForm(ClassroomType::class, $classroom);
         $form->submit($request->request->all());
 
         if ($form->isValid()) {
-            $em->persist($classroom);
-            $em->flush();
+            $classroomManager->save($classroom);
 
             return $classroom;
         }
@@ -66,9 +69,9 @@ class ClassroomController extends FOSRestController
      */
     public function updateClassroomAction($id, Request $request)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $classroomRepository = $this->get('repository.classroom');
-        $classroom = $classroomRepository->find($id);
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
+        $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
             return new View('Classroom not found', Response::HTTP_NOT_FOUND);
         }
@@ -77,7 +80,7 @@ class ClassroomController extends FOSRestController
         $form->submit($request->request->all());
 
         if ($form->isValid()) {
-            $em->flush();
+            $classroomManager->save($classroom);
 
             return $classroom;
         }
@@ -90,9 +93,9 @@ class ClassroomController extends FOSRestController
      */
     public function patchClassroomAction($id, Request $request)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $classroomRepository = $this->get('repository.classroom');
-        $classroom = $classroomRepository->find($id);
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
+        $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
             return new View('Classroom not found', Response::HTTP_NOT_FOUND);
         }
@@ -101,7 +104,7 @@ class ClassroomController extends FOSRestController
         $form->submit($request->request->all(), false);
 
         if ($form->isValid()) {
-            $em->flush();
+            $classroomManager->save($classroom);
 
             return $classroom;
         }
@@ -114,15 +117,14 @@ class ClassroomController extends FOSRestController
      */
     public function deleteClassroomAction($id)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $classroomRepository = $this->get('repository.classroom');
-        $classroom = $classroomRepository->find($id);
+        /** @var ClassroomManagerInterface $classroomManager */
+        $classroomManager = $this->get('classroom_manager');
+        $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
             return new View('Classroom not found', Response::HTTP_NOT_FOUND);
         }
 
-        $em->remove($classroom);
-        $em->flush();
+        $classroomManager->delete($classroom);
 
         return $this->view('Classroom deleted');
     }

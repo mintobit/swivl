@@ -1,5 +1,5 @@
 services:
-    repository.classroom:
+    classroom_manager:
         class: SwivlClassroomBundle\Repository\ClassroomRepository
         factory: ["@doctrine.orm.entity_manager", getRepository]
         arguments:

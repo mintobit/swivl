@@ -1,4 +1,4 @@
-#Setup
+# Setup
 
 1. Install virtualbox on your host machine
 2. Download virtual machine image from https://www.dropbox.com/s/o3qp6p8zic52u8y/swivl.ova?dl=0

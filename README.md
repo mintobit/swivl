@@ -1,3 +1,5 @@
+#Setup
+
 1. Install virtualbox on your host machine
 2. Download virtual machine image from https://www.dropbox.com/s/o3qp6p8zic52u8y/swivl.ova?dl=0
 3. Import virtual machine image https://i.imgur.com/UvJQx2H.png
@@ -7,3 +9,7 @@
 7. Run postman via terminal `apps/Postman/Postman` OR via desktop file manager https://i.imgur.com/HPzaoKG.png
 8. Use `swivl` collection in postman to send API requests
 
+# What can be improved
+* Use DTO with forms, so that model can be free from setters
+* API documentation using NelmioApiDocBundle
+* Implement functional/unit tests

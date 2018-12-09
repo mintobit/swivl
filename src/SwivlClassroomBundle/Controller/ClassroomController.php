@@ -5,12 +5,12 @@ namespace SwivlClassroomBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use SwivlClassroomBundle\Entity\Classroom;
 use SwivlClassroomBundle\Form\ClassroomType;
 use SwivlClassroomBundle\Service\ClassroomManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class ClassroomController extends FOSRestController
 {
@@ -42,7 +42,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
+            throw new ResourceNotFoundException(static::MESSAGE_CLASSROOM_NOT_FOUND);
         }
 
         return $classroom;
@@ -77,7 +77,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
+            throw new ResourceNotFoundException(static::MESSAGE_CLASSROOM_NOT_FOUND);
         }
 
         $form = $this->createForm(ClassroomType::class, $classroom, ['method' => 'PUT']);
@@ -101,7 +101,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
+            throw new ResourceNotFoundException(static::MESSAGE_CLASSROOM_NOT_FOUND);
         }
 
         $form = $this->createForm(ClassroomType::class, $classroom, ['method' => 'PATCH']);
@@ -125,11 +125,11 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
+            throw new ResourceNotFoundException(static::MESSAGE_CLASSROOM_NOT_FOUND);
         }
 
         $classroomManager->delete($classroom);
 
-        return $this->view(static::MESSAGE_CLASSROOM_DELETED);
+        return $this->view(static::MESSAGE_CLASSROOM_DELETED, Response::HTTP_OK);
     }
 }

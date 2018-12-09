@@ -86,3 +86,8 @@ fos_rest:
     disable_csrf_role: IS_AUTHENTICATED_FULLY
     exception:
         enabled: true
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true

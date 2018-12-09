@@ -35,7 +35,6 @@ class Classroom
     /**
      * @var bool
      *
-     * @Assert\NotEqualTo(value="")
      * @Assert\Type(type="boolean")
      * @ORM\Column(name="active", type="boolean")
      */

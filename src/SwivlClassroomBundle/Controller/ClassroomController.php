@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ClassroomController extends FOSRestController
 {
+    const MESSAGE_NO_CLASSROOMS         = 'No classrooms exist';
+    const MESSAGE_CLASSROOM_NOT_FOUND   = 'Classroom not found';
+    const MESSAGE_CLASSROOM_DELETED     = 'Classroom deleted';
+
     /**
      * @Rest\Get("/classroom")
      */
@@ -23,7 +27,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classrooms = $classroomManager->getAll();
         if (empty($classrooms)) {
-            return new View('No classrooms exist', Response::HTTP_NOT_FOUND);
+            return $this->view(static::MESSAGE_NO_CLASSROOMS, Response::HTTP_NO_CONTENT);
         }
 
         return $classrooms;
@@ -38,7 +42,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return new View('Classroom not found', Response::HTTP_NOT_FOUND);
+            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
         }
 
         return $classroom;
@@ -73,7 +77,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return new View('Classroom not found', Response::HTTP_NOT_FOUND);
+            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(ClassroomType::class, $classroom, ['method' => 'PUT']);
@@ -97,7 +101,7 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return new View('Classroom not found', Response::HTTP_NOT_FOUND);
+            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(ClassroomType::class, $classroom, ['method' => 'PATCH']);
@@ -121,11 +125,11 @@ class ClassroomController extends FOSRestController
         $classroomManager = $this->get('classroom_manager');
         $classroom = $classroomManager->findById((int) $id);
         if (null === $classroom) {
-            return new View('Classroom not found', Response::HTTP_NOT_FOUND);
+            return $this->view(static::MESSAGE_CLASSROOM_NOT_FOUND, Response::HTTP_NOT_FOUND);
         }
 
         $classroomManager->delete($classroom);
 
-        return $this->view('Classroom deleted');
+        return $this->view(static::MESSAGE_CLASSROOM_DELETED);
     }
 }
